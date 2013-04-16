@@ -1,3 +1,12 @@
+#
+# R package "Erlang"
+#
+# Copyright (c) 2013 Patrick Hubers
+#
+# This packages contains functions related to (contact center) staffing,
+# using the Erlang C function
+#
+
 #' Calculate traffic intensity
 #' 
 #' @param arrival_rate: Number of arrivals per time unit
