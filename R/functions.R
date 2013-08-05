@@ -78,7 +78,8 @@ service_level <- function(number_of_agents, arrival_rate, avg_handle_time, wait_
 
 #' Calculate the number of needed agents 
 #' 
-#' Calculates the number of agents that are needed to achieve a required service level
+#' Calculates the number of agents that are needed to achieve a required service level. Currently only
+#' calculates a whole (integer) number of agents.
 #' 
 #' @param arrival_rate: Number of arrivals 
 #' @param avg_handling_time: Average handling time
