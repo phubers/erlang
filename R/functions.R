@@ -7,7 +7,7 @@
 # using the Erlang C function
 #
 
-#' Calculate traffic intensity
+#' Calculate traffic intensity (a.k.a. workload)
 #' 
 #' @param arrival_rate: Number of arrivals per interval
 #' @param avg_handle_time: Average handling time in seconds
@@ -56,7 +56,7 @@ erlang_c <- function(number_of_agents, intensity) {
 #' @param interval_lengt: Length of an interval in minutes
 #' @return Average waiting time in seconds
 #' @export 
-avg_wait_time <- function(number_of_agents, arrival_rate, avg_handle_time, interval_length) {
+avg_wait_time <- function(number_of_agents, arrival_rate, avg_handle_time, interval_length = 60) {
   int <- intensity(arrival_rate, avg_handle_time, interval_length)
   awt <- (erlang_c(number_of_agents, int)*avg_handle_time)/(number_of_agents - int)
   return(awt)
@@ -79,22 +79,43 @@ service_level <- function(number_of_agents, arrival_rate, avg_handle_time, inter
   return(sl)
 }
 
-#' Calculate the number of needed agents 
+#' Calculate the number of needed agents for SL goal
 #' 
 #' Calculates the number of agents that are needed to achieve a required service level. Currently only
 #' calculates a whole (integer) number of agents.
 #' 
 #' @param arrival_rate: Number of arrivals per interval
-#' @param avg_handling_time: Average handling time in seconds
+#' @param avg_handle_time: Average handling time in seconds
 #' @param interval_length: Length of an interval in minutes
 #' @param wait_time: Acceptable waiting time (i.e. 20 seconds in a 80/20 SL goal)
 #' @param service_level_goal: Service level goal, the percentage of calls answered within the acceptable waiting time
 #' @return Number of agents needed to achieve service level
 #' @export
-number_of_agents <- function(arrival_rate, avg_handling_time, interval_length, wait_time, service_level_goal) {
-  int <- intensity(arrival_rate, avg_handling_time, interval_length)
+number_of_agents_for_sl <- function(arrival_rate, avg_handle_time, interval_length, wait_time, service_level_goal) {
+  int <- intensity(arrival_rate, avg_handle_time, interval_length)
   agents <- int
-  while(service_level(agents,arrival_rate, avg_handling_time, wait_time) < service_level_goal) {
+  while(service_level(agents, arrival_rate, avg_handle_time, interval_length, wait_time) < service_level_goal) {
+    agents <- agents + 1
+  }
+  return(agents)
+}
+
+
+#' Calculate the number of needed agents for achieve an ASA goal
+#' 
+#' Calculates the number of agents that are needed to achieve a required average speed of answer. Currently only
+#' calculates a whole (integer) number of agents.
+#' 
+#' @param arrival_rate: Number of arrivals per interval
+#' @param avg_handle_time: Average handling time in seconds
+#' @param interval_length: Length of an interval in minutes
+#' @param wait_time: Waiting time goal in seconds
+#' @return Number of agents needed to achieve ASA
+#' @export
+number_of_agents_for_asa <- function(arrival_rate, avg_handle_time, interval_length, wait_time) {
+  int <- intensity(arrival_rate, avg_handle_time, interval_length)
+  agents <- int
+  while(avg_wait_time(agents, arrival_rate, avg_handle_time, interval_length) > wait_time) {
     agents <- agents + 1
   }
   return(agents)
