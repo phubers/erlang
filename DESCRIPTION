@@ -1,12 +1,13 @@
 Package: Erlang
-Version: 0.1
-Date: 2013-04-16
+Version: 0.2
+Date: 2017-05-03
 Title: Erlang functions for contact centers
 Author: Patrick Hubers
 Maintainer: Patrick Hubers <patrick@contactsport.nl>
 Depends: R (>= 1.8.0)
 Suggests: 
-Description: Implementations of Erlang C and related functions for contact center staffing
+Description: Implementations of Erlang C and related functions for contact center staffing.
 License: GPL (>= 2)
 URL: http://www.contactsport.nl
 BugReports: http://www.contactsport.nl
+RoxygenNote: 6.0.1
