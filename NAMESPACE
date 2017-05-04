@@ -1,7 +1,0 @@
-export(avg_wait_time)
-export(erlang_c)
-export(intensity)
-export(number_of_agents_for_asa)
-export(number_of_agents_for_sl)
-export(occupancy)
-export(service_level)
