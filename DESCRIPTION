@@ -1,6 +1,6 @@
 Package: Erlang
-Version: 0.2
-Date: 2017-05-03
+Version: 0.3
+Date: 2017-05-04
 Title: Erlang functions for contact centers
 Author: Patrick Hubers
 Maintainer: Patrick Hubers <patrick@contactsport.nl>
