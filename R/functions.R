@@ -106,7 +106,7 @@ number_of_agents_for_sl <- function(arrival_rate, avg_handle_time, interval_leng
 }
 
 
-#' Calculate the number of needed agents for achieve an ASA goal
+#' Calculate the number of needed agents to achieve an ASA goal
 #' 
 #' Calculates the number of agents that are needed to achieve a required average speed of answer. Currently only
 #' calculates a whole (integer) number of agents.
