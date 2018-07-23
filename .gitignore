@@ -4,3 +4,4 @@
 .Ruserdata
 man/*.Rd
 NAMESPACE
+inst/doc

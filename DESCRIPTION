@@ -1,13 +1,16 @@
 Package: Erlang
 Version: 0.4
 Date: 2018-07-19
-Title: Erlang functions for contact centers
+Title: Queuing and Staffing Functions for Contact Centers
 Author: Patrick Hubers
 Maintainer: Patrick Hubers <patrick@stompbox.nl>
 Depends: R (>= 1.8.0)
-Suggests: 
-Description: Implementations of Erlang C and related functions for contact center staffing.
-License: GPL (>= 2)
+Suggests: ,
+    knitr,
+    rmarkdown
+Description: Implementation of Erlang-B, Erlang-C and related functions, typically used for contact center staffing.
+License: GPL-2
 URL: https://github.com/phubers/erlang
 BugReports: https://github.com/phubers/erlang/issues
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr

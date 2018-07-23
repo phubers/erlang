@@ -1,7 +1,7 @@
 #
 # R package "Erlang"
 #
-# Copyright (c) 2013-2017 Patrick Hubers
+# Copyright (c) 2013-2018 Patrick Hubers
 #
 # This packages contains functions related to (contact center) staffing,
 # using the Erlang C function

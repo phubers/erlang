@@ -1,0 +1,94 @@
+---
+title: "Erlang: Queuing and Staffing Functions for Contact Centers"
+author: "Patrick Hubers"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(Erlang)
+```
+
+
+Call centers (or contact centers) have a unique staffing problem, because of the nature of their workload. Calls are arriving randomly, with unpredictable intervals between them. Even though we can determine the average amount of calls we're receiving, this random pattern means that in some periods we will have fewer calls than agents/operators, resulting in occupancy levels < 100% (agents are not busy taking calls the entire time). In other periods, we will have more calls than agents, resulting in callers have to wait until they can be served. 
+
+Combined with the fact that callers usually have a finite amount of patience, we need a method to calculate the optimum number of agents, such that agents are occupied most of their time, while callers will not need to wait too long.
+
+# Calculating traffic intensity (a.k.a. workload)
+
+Workload, the amount of work to be done, is usually expressed as the average traffic intensity, the number of calls received multiplied by the average time needed to handle a single call (AHT, for Average Handling Time). This is therefore expressed as "hours of work in a one hour period". This dimensionless unit is called "Erlang", after the Danish mathematician Agner Erlang.
+
+To calculate traffic intensity or workload in Erlang, use the function "intensity". For example, a workload of 200 calls per half hour and an average handling time of 3 minutes, means we'll have 20 calls in progress on average.
+```{r}
+workload <- intensity(arrival_rate = 200, avg_handle_time = 180, interval_length = 30)
+print(workload)
+```
+
+# Calculating the chance of a blocked call
+
+Agner Erlang discovered the typical distribution pattern of randomly arriving calls and used this to calculate the relation between trunk capacity (the number of phone lines one has available) and the chance of a random caller being blocked (i.e. getting a "busy" tone). This is done through the Erlang B function.
+```{r}
+blocking <- erlang_b(number_of_servers = 25, intensity = 20)
+print(blocking)
+```
+
+
+# Calculating the chance of a queued call
+
+The Erlang C function is used to calculate the chance of a call being queued. In todays contact center environments, calls are not simply blocked when no agent is available, but held in a waiting queue until an agent becomes available to handle the call. Since calls are not simply being dropped but held in queue, the chance of waiting is higher than the chance of getting blocked with the same number of servers.
+```{r}
+waiting <- erlang_c(number_of_agents = 25, intensity = 20)
+print(waiting)
+```
+
+# Calculating waiting times
+
+Using Erlang C and knowing the workload distribution (a few long calls or many short calls), we can also calculate the expected waiting times for callers. Typically, two metrics are used for this:
+
+- Service Level or SL: the percentage of callers that will have to wait more than a specific amount of time. Usually, this acceptable waiting time is somewhere between 10 seconds and 60 (occassionally 120) seconds. This depends on the service goals of the contact center and is ideally based on waiting times that are deemed acceptable by their customers. Usually Service Level goals are expressed with two numbers separated by a slash, i.e. 80/60 means that 80% of calls have to be picked up within 60 seconds.
+- Average Speed of Answer or ASA: the average waiting time for callers, in seconds. This is actually a bit of a misnomer, since higher ASA actually mean longer waiting times (and therefore lower speed). Scientific literature often uses Average Waiting Time, AWT, but this is not widely used within the industry itself.
+```{r}
+sl <- service_level(number_of_agents = 25, arrival_rate = 200, avg_handle_time = 180, interval_length = 30, wait_time = 60)
+print(sl)
+
+asa <- avg_wait_time(number_of_agents = 25, arrival_rate = 200, avg_handle_time = 180, interval_length = 30)
+print(asa)
+```
+
+## Caveat
+The Erlang C formula works on the assumption that none of the callers abandon the queue and every caller will wait until they're being served. In reality, callers will abandon once their patience runs out. This has the effect of shortening the queue and therefore shortening the remaining waiting time for other callers in the queue or entering the queue. In that case, Erlang C will overestimate the chance of waiting.
+
+The result of this overestimation will lead to calculated service levels and waiting times that will be better in reality. It also means that these functions tend to overestimate the number of agents that are needed. Techniques exist to take customer patience and abandonment into account (Erlang A and Erlang X), but these are not (yet) included in this package.
+
+
+# Calculating required number of agents
+
+The goal of using these functions is often to determine how many agents are needed to succesfully handle an expected workload. This is dependent on the amount of traffic and the organisation's service goals, be it either SL or ASA.
+
+If we want to calculate the number of agents needed to achieve a Service Level result of 80% within 60 second or an Average Speed of Answer of 120 seconds, we can use these functions:
+```{r}
+agents <- number_of_agents_for_sl(arrival_rate = 200, avg_handle_time = 180, interval_length = 30, wait_time = 60, service_level_goal = 0.8)
+print(agents)
+
+agents <- number_of_agents_for_asa(arrival_rate = 200, avg_handle_time = 180, interval_length = 30, wait_time = 120)
+print(agents)
+```
+
+
+# Calculating agent occupancy
+
+Agent occupancy is the amount of work divided by the number of agents doing said work. So, if we have a workload of 20 Erlang and we need 23 agents to hit our service level target, we get an occupancy of 20/23 or 87%
+```{r}
+occupancy <- occupancy(23, 20)
+print(occupancy)
+```
+
+
