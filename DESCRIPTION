@@ -5,11 +5,9 @@ Title: Queuing and Staffing Functions for Contact Centers
 Author: Patrick Hubers
 Maintainer: Patrick Hubers <patrick@stompbox.nl>
 Depends: R (>= 1.8.0)
-Suggests: ,
-    knitr,
-    rmarkdown
+Suggests: knitr, rmarkdown
 Description: Implementation of Erlang-B, Erlang-C and related functions, typically used for contact center staffing.
-License: GPL-2
+License: file LICENSE
 URL: https://github.com/phubers/erlang
 BugReports: https://github.com/phubers/erlang/issues
 RoxygenNote: 6.0.1
