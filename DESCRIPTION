@@ -1,6 +1,6 @@
 Package: Erlang
 Version: 0.4
-Date: 2018-07-19
+Date: 2019-05-15
 Title: Queuing and Staffing Functions for Contact Centers
 Author: Patrick Hubers
 Maintainer: Patrick Hubers <patrick@stompbox.nl>
@@ -10,5 +10,6 @@ Description: Implementation of Erlang-B, Erlang-C and related functions, typical
 License: file LICENSE
 URL: https://github.com/phubers/erlang
 BugReports: https://github.com/phubers/erlang/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
+Encoding: UTF-8
